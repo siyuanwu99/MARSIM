@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>mars_drone_sim</name>
-  <version>0.0.0</version>
-  <description>The mars_drone_sim package</description>
+  <name>marsim_simulator</name>
+  <version>1.0.0</version>
+  <description>The marsim_simulator package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="jackykong@todo.todo">jackykong</maintainer>
+  <maintainer email="kongfz@connect.hku.hk">jackykong</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
