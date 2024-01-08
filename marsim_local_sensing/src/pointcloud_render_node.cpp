@@ -1,3 +1,8 @@
+/**
+ * @file
+ * @brief render point cloud from global map and local map
+ */
+
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <nav_msgs/Odometry.h>
@@ -544,7 +549,7 @@ void dynobjGenerate(const ros::TimerEvent &event) {
     dynobj_points_vis.is_dense = true;
 
     pcl::toROSMsg(dynobj_points_vis, dynobj_points_pcd);
-    dynobj_points_pcd.header = odom_.header;
+    dynobj_points_pcd.header          = odom_.header;
     dynobj_points_pcd.header.frame_id = "world";
     pub_dyncloud.publish(dynobj_points_pcd);
 
@@ -656,11 +661,11 @@ void rcvOdometryCallbck(const nav_msgs::Odometry &odom) {
   q = sensor2world.block<3, 3>(0, 0);
 
   geometry_msgs::PoseStamped sensor_pose;
-  sensor_pose.header = odom_.header;
-  sensor_pose.header.frame_id = "/map";
-  sensor_pose.pose.position.x = odom_.pose.pose.position.x;
-  sensor_pose.pose.position.y = odom_.pose.pose.position.y;
-  sensor_pose.pose.position.z = odom_.pose.pose.position.z;
+  sensor_pose.header             = odom_.header;
+  sensor_pose.header.frame_id    = "/map";
+  sensor_pose.pose.position.x    = odom_.pose.pose.position.x;
+  sensor_pose.pose.position.y    = odom_.pose.pose.position.y;
+  sensor_pose.pose.position.z    = odom_.pose.pose.position.z;
   sensor_pose.pose.orientation.w = q.w();
   sensor_pose.pose.orientation.x = q.x();
   sensor_pose.pose.orientation.y = q.y();
@@ -1170,12 +1175,12 @@ void renderSensedPoints(const ros::TimerEvent &event) {
 
 #ifndef DEBUG
 #pragma omp parallel /*default(none)*/                                                             \
-    shared(pattern_matrix, polar_matrix, cloud_all_map, pointIdxRadiusSearch,                  \
-           min_raylength, downsample_res, polar_resolution, use_avia_pattern, _kdtreeLocalMap, \
-           polarindex_matrix, local_map_filled, local_map,                                     \
-           all_normals, vertical_fov, yaw_fov, sensing_horizon, fov_points, fov_pointsindex,   \
-           polarindextype_matrix, original_pointcount, curvature_limit, allowblur_matrix,      \
-           origin_mapptcount, drone_num, polarpointintensity_matrix, uav_points_num)
+shared(pattern_matrix, polar_matrix, cloud_all_map, pointIdxRadiusSearch, min_raylength,           \
+           downsample_res, polar_resolution, use_avia_pattern, _kdtreeLocalMap, polarindex_matrix, \
+           local_map_filled, local_map, all_normals, vertical_fov, yaw_fov, sensing_horizon,       \
+           fov_points, fov_pointsindex, polarindextype_matrix, original_pointcount,                \
+           curvature_limit, allowblur_matrix, origin_mapptcount, drone_num,                        \
+           polarpointintensity_matrix, uav_points_num)
   {
 #pragma omp for
 #endif
@@ -1271,11 +1276,9 @@ void renderSensedPoints(const ros::TimerEvent &event) {
   // ROS_INFO("After first filter");
   ros::Time t6 = ros::Time::now();
 
-  if (plane_interline == 1)
-  {
-
+  if (plane_interline == 1) {
 #pragma omp parallel /*default(none)*/ \
-    shared(polarindex_matrix, culling_kdindex)
+shared(polarindex_matrix, culling_kdindex)
     {
       std::vector<int> vec_private;
 
@@ -1311,10 +1314,8 @@ void renderSensedPoints(const ros::TimerEvent &event) {
     double duration_direct    = 0.0;
 
 #ifndef DEBUG
-#pragma omp parallel /*default(none)*/                                                                \
-    shared(culling_kdindex,                                                                       \
-           polar_matrix, cloud_all_map,                                                           \
-           downsample_res, polar_resolution,                                                      \
+#pragma omp parallel /*default(none)*/                                                            \
+shared(culling_kdindex, polar_matrix, cloud_all_map, downsample_res, polar_resolution,            \
            all_normals, curvature_limit, fov_points, origin_mapptcount, dynobj_points,            \
            polarindextype_matrix, sensing_horizon, dynobj_enable, culling_size, allowblur_matrix, \
            otheruav_points_inrender, drone_num, uav_points_num, polarpointintensity_matrix)
@@ -1499,9 +1500,9 @@ void renderSensedPoints(const ros::TimerEvent &event) {
   int free_flag = 0;
 
 #ifndef DEBUG
-#pragma omp parallel /*default(none)*/                                                                 \
-    shared(use_avia_pattern, use_vlp32_pattern, use_minicf_pattern, is_360lidar,                   \
-           polar_matrix, pattern_matrix, min_raylength, vertical_fov, local_map_filled, free_flag, \
+#pragma omp parallel /*default(none)*/                                                     \
+shared(use_avia_pattern, use_vlp32_pattern, use_minicf_pattern, is_360lidar, polar_matrix, \
+           pattern_matrix, min_raylength, vertical_fov, local_map_filled, free_flag,       \
            sensing_horizon, rotmyaw, polarindextype_matrix, polarpointintensity_matrix)
   {
 #endif
@@ -1651,18 +1652,18 @@ void renderSensedPoints(const ros::TimerEvent &event) {
   local_map_filled.is_dense = true;
 
   pcl::toROSMsg(local_map_filled, local_map_pcd);
-  local_map_pcd.header = odom_.header;
+  local_map_pcd.header          = odom_.header;
   local_map_pcd.header.frame_id = "world";
   pub_cloud.publish(local_map_pcd);
 
   // transform
   std::string                          sensor_frame_id_ = "/sensor";
   static tf2_ros::TransformBroadcaster br;
-  geometry_msgs::TransformStamped transform;
-  ros::Time time_stamp_ = odom_.header.stamp;
-  transform.header.stamp = time_stamp_;
-  transform.header.frame_id = "world";
-  transform.child_frame_id = sensor_frame_id_;
+  geometry_msgs::TransformStamped      transform;
+  ros::Time                            time_stamp_ = odom_.header.stamp;
+  transform.header.stamp                           = time_stamp_;
+  transform.header.frame_id                        = "world";
+  transform.child_frame_id                         = sensor_frame_id_;
 
   transform.transform.translation.x = pos.x();
   transform.transform.translation.y = pos.y();
@@ -1737,8 +1738,7 @@ void renderSensedPoints(const ros::TimerEvent &event) {
   }
 }
 
-void pubSensorPose(const ros::TimerEvent &e)
-{
+void pubSensorPose(const ros::TimerEvent &e) {
   // Eigen::Quaterniond q;
   // q = sensor2world.block<3, 3>(0, 0);
 

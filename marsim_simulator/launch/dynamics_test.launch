@@ -16,7 +16,7 @@
         
     </node>
 
-    <node pkg="cascadePID" name="cascadePID_node_1" type="cascadePID_node" output="screen" >
+    <node pkg="marsim_controller" name="cascadePID_node_1" type="cascade_pid_node" output="screen" >
         <remap from="~odom" to="/simulator/odom"/>
         <remap from="~cmd_RPM" to="/quad_1_cmdRPM"/>
         <remap from="~cmd_pose" to="/planning/pos_new_cmd"/>
